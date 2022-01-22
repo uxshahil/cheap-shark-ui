@@ -1,13 +1,17 @@
 import React from 'react';
-import { AllDeals } from './components';
+import { Deals, Stores, DealDetail, Games } from './components';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 const Router = () => {
 
     return (
-        <BrowserRouter>
-            <Routes>                                           
-                <Route path="/" element={<AllDeals />} />
+        <BrowserRouter>        
+            <Routes>
+                <Route path="/" element={<Deals />} >
+                    <Route path="/deal" element={<DealDetail />} />
+                </Route>
+                <Route path="/games" element={<Games />} />     
+                <Route path="/stores" element={<Stores />} />                
             </Routes>
         </BrowserRouter>
     )

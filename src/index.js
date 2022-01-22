@@ -6,11 +6,15 @@ import { Provider } from 'react-redux';
 import reportWebVitals from './reportWebVitals';
 import './styles/antd.less';
 import './styles/globals.css';
+import { Layout } from 'antd';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <Router />
+    <Provider store={store}>      
+      <Layout className='pageLayout'>              
+        <Router>          
+        </Router>
+      </Layout>      
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

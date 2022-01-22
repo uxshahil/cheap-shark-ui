@@ -1,0 +1,22 @@
+.header {
+	height: 180px !important;
+	background: #ffffff !important;
+	box-shadow: 0px -3px 50px rgba(0, 0, 0, 0.1);
+	border-radius: 0px 0px 30px 30px;
+	margin-bottom: 64px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.headerLogo {
+	border-radius: 50%;
+}
+
+.headerLogoText {
+	margin-left: 37px;
+	font-weight: 500;
+	font-size: 28px;
+	line-height: 36px;
+	color: #000000;
+}
