@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout, Image, Typography } from 'antd';
 import { Navigation } from './';
-import '../styles/Header.css';
+import '../styles/SiteHeader.css';
 const { Text } = Typography;
 const { Header } = Layout;
 

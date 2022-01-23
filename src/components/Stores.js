@@ -1,12 +1,12 @@
 import React from 'react';
-import { Header } from './';
+import { SiteHeader } from './';
 import { Layout } from 'antd';
 const { Content } = Layout;
 
 function Stores() {
   return (
     <>
-      <Header />
+      <SiteHeader />
       <Content>Stores</Content>
     </>
   );

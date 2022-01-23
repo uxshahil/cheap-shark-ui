@@ -1,0 +1,64 @@
+/* PageHeader */
+.pageHeader {
+	height: 108px;
+	display: flex;
+	align-items: center;
+	margin-bottom: 48px;
+}
+
+.dealsHeaderText {
+	font-weight: 500;
+	font-size: 48px;
+	line-height: 62px;
+	letter-spacing: 1.5px;
+}
+
+.ant-input-group .ant-input,
+.ant-btn {
+	height: 52px !important;
+}
+
+.ant-btn {
+	border-left: none !important;
+}
+
+/* Filters */
+.dealsFilters {
+    background: #FCFCFC;
+    margin: -16px !important;
+    padding: 16px !important;    
+}
+
+.dealsFiltersText {	
+	font-size: 28px;
+	line-height: 36px;
+	display: flex;
+	align-items: center;
+	letter-spacing: 1.5px;
+}
+
+.dealsFiltersChevron {
+	display: flex !important;
+	align-items: center;
+	justify-content: center;
+}
+
+.dealsFiltersCheckbox {
+	font-size: 18px;
+	line-height: 22px;	
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-start;
+}
+
+.dealsFiltersChecks {
+    margin-top: 56px;
+    margin-left: -8px;
+    margin-right: -8px;
+    padding-bottom: 56px;
+    border-bottom: 0.5px solid #D2D2D2;
+}
+
+.hide {
+    display: none !important;
+}
