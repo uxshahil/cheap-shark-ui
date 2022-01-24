@@ -1,19 +1,41 @@
 import React from 'react';
 import { Deals, Stores, DealDetail, Games } from './components';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Outlet, Routes, Route } from "react-router-dom";
+import { Layout } from 'antd';
+import { SiteHeader } from './components';
+const { Content } = Layout;
 
 const Router = () => {
 
     return (
-        <BrowserRouter>        
+        <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Deals />} >
-                    <Route path="/deal" element={<DealDetail />} />
+                <Route element={<PageLayout />}>
+                    <Route index element={<Deals />} />
+                    <Route path="/deals" element={<Deals />} />
+                    <Route path="/deals/:id" element={<DealDetail />} />
+                    <Route path="/games" element={<Games />} />
+                    <Route path="/stores" element={<Stores />} />
+                    <Route path="*" element={<NoMatch />} />
                 </Route>
-                <Route path="/games" element={<Games />} />     
-                <Route path="/stores" element={<Stores />} />                
             </Routes>
         </BrowserRouter>
+    )
+}
+
+const NoMatch = () => {
+    return (<p>There's nothing here: 404!</p>);
+  };
+
+const PageLayout = () => {
+
+    return (
+        <>
+            <SiteHeader />
+            <Content>
+                <Outlet />
+            </Content>
+        </>
     )
 }
 

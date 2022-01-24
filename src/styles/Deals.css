@@ -15,21 +15,22 @@
 
 .ant-input-group .ant-input,
 .ant-btn {
-	height: 52px !important;
+	height: 52px !important;    
+    background: none !important;
 }
 
-.ant-btn {
+.ant-input-group-addon .ant-btn {
 	border-left: none !important;
 }
 
 /* Filters */
 .dealsFilters {
-    background: #FCFCFC;
-    margin: -16px !important;
-    padding: 16px !important;    
+	background: #fcfcfc;
+	margin: -16px -16px 64px !important;
+	padding: 16px !important;
 }
 
-.dealsFiltersText {	
+.dealsFiltersText {
 	font-size: 28px;
 	line-height: 36px;
 	display: flex;
@@ -45,20 +46,80 @@
 
 .dealsFiltersCheckbox {
 	font-size: 18px;
-	line-height: 22px;	
-    display: flex;
-    flex-direction: row-reverse;
-    align-items: flex-start;
+	line-height: 22px;
+	display: flex;
+	flex-direction: row-reverse;
+	align-items: flex-start;
 }
 
 .dealsFiltersChecks {
-    margin-top: 56px;
-    margin-left: -8px;
-    margin-right: -8px;
-    padding-bottom: 56px;
-    border-bottom: 0.5px solid #D2D2D2;
+	margin-top: 56px;
+	margin-left: -8px;
+	margin-right: -8px;
+	padding-bottom: 56px;
+	border-bottom: 0.5px solid #d2d2d2;
 }
 
 .hide {
-    display: none !important;
+	display: none !important;
+}
+
+/* Deal */
+.dealsContainer {
+	padding-top: 112px;
+	row-gap: 80px !important;
+	column-gap: 80px;
+	display: flex;
+	justify-content: space-between;
+	padding-bottom: 112px;
+}
+
+.dealContainer {
+	width: 356px;
+	height: 208px;
+	background: #fbfbfb;
+	box-shadow: 0px 12px 24px rgba(44, 39, 56, 0.02),
+		0px 24px 48px rgba(44, 39, 56, 0.04);
+	border-radius: 24px;
+	padding: 30px 20px;
+}
+
+.dealContainerTitle,
+.dealContainerDescription {
+	margin-bottom: 8px;
+}
+
+.dealTextTitle {
+	font-weight: bold;
+	font-size: 28px;
+	line-height: 36px;
+	color: #2c2738;
+	margin-bottom: 8px;
+}
+
+.dealContainerDescription {
+	height: 36px;
+}
+
+.dealTextNormalPrice {
+	font-size: 16px;
+	line-height: 22px;
+	font-weight: 400;
+	color: #2c2738;
+	text-decoration-line: line-through;
+}
+
+.dealTextSalePrice {
+	font-size: 16px;
+	line-height: 22px;
+	font-weight: bold;
+	color: #14a38b !important;
+	margin-left: 8px;
+}
+
+.dealButton {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 21px;
+    text-align: center;
 }
