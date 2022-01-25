@@ -3,156 +3,144 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Row, Col, Button, Image, Typography } from 'antd';
 
 import { useDispatch, useSelector } from "react-redux";
-import { getStoreName } from '../features/stores';
+import { getAllStores, getStoreName } from '../features/stores';
+import { getDealAsync } from '../features/deals';
+import { getGameAsync } from '../features/game';
 
 import '../styles/Deals.css';
 import '../styles/DealDetail.css';
 
 const { Text } = Typography;
 
-const dealUrl = "https://www.cheapshark.com/api/1.0/deals?id=";
-const gameUrl = "https://www.cheapshark.com/api/1.0/games?id=";
-
-var axios = require('axios');
-
-let storeCache;
-
 function DealDetail() {
   const { id } = useParams();
+
   const [gameId, setGameId] = useState(null);
   const [storeId, setStoreId] = useState(null);
   const [dealImage, setDealImage] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch()
-
+  dispatch(getAllStores());    
+  
   const Deal = (props) => {
 
-    const [deal, setDeal] = useState(null);
+    const deal = useSelector((state) => state.deals.deal);
 
     useEffect(() => {
+      dispatch(getDealAsync(props.dealId)).then(() => {
+      });
+    }, [props.dealId])
 
-      var getDeal = {
-        method: 'get',
-        url: dealUrl + props.dealId,
-        headers: {}
-      };
+    console.log(props.dealId);    
+    
+    console.log(deal.length);    
 
-      axios(getDeal)
-        .then(function (response) {
-          console.log((response.data));
-          setDeal(response.data)
-          setGameId(response.data.gameInfo.gameID)
-          setStoreId(response.data.gameInfo.storeID)          
-          setDealImage(response.data.gameInfo.thumb)
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }, [props.dealId]);
+    if (deal.length === 0) return null;
 
-    console.log(deal);
+    try {
+      setGameId(deal[0].gameInfo.gameID)
+      setStoreId(deal[0].gameInfo.storeID)
+      setDealImage(deal[0].gameInfo.thumb)
+  
+      return (
+        <>
+          <Row className='dealDetailContainer'>
+            <Col span={24} className='dealDetailContainerTitle'>
+              <Text className='dealDetailTextTitle'>{deal[0].gameInfo.name}</Text>
+            </Col>
+            <Col span={24} className='dealDetailContainerDescription'>
+              <Text>
+                <span className='dealDetailTextNormalPrice'>${deal[0].gameInfo.retailPrice}</span>
+                <span className='dealDetailTextSalePrice'>${deal[0].gameInfo.salePrice}</span>
+              </Text>
+              <Text className='dealDetailTextYouSave'>You save ${(deal[0].gameInfo.retailPrice - deal[0].gameInfo.salePrice).toFixed(2)}</Text>
+            </Col>
+          </Row>
+        </>
+      )
+      } catch(e) {
+        return (deal + e.toString());
+      }
 
-    if (deal === null || deal.length === 0) return null;
 
-    return (
-      <>
-        <Row className='dealDetailContainer'>
-          <Col span={24} className='dealDetailContainerTitle'>
-            <Text className='dealDetailTextTitle'>{deal.gameInfo.name}</Text>
-          </Col>
-
-          <Col span={24} className='dealDetailContainerDescription'>
-            <Text>
-              <span className='dealDetailTextNormalPrice'>${deal.gameInfo.retailPrice}</span>
-              <span className='dealDetailTextSalePrice'>${deal.gameInfo.salePrice}</span>
-            </Text>
-            <Text className='dealDetailTextYouSave'>You save ${deal.gameInfo.retailPrice - deal.gameInfo.salePrice}</Text>
-          </Col>
-        </Row>
-      </>
-    )
   }
 
   const Store = (props) => {
-      
-    const storeName = useSelector((state) => state.stores.value);
-    dispatch(getStoreName(props.storeId));
+    
+    const { allStores, store } = useSelector((state) => state.stores);
+    
+    useEffect(() => {     
+      if(allStores.length > 1) {
+        dispatch(getStoreName(props.storeId));
+      }     
+    }, [props.storeId, allStores.length])  
 
-    return (
+    if (!store) return 'null';
+
+    return (      
       <>
         <Row className='storeTitleContainer'>
           <Col span={24} className='storeTitleTextContainer'>
-            <Text className='storeTitleText'>{storeName}</Text>
+            <Text className='storeTitleText'>{store}</Text>
           </Col>
         </Row>
       </>
     )
   }
 
-  // const OtherDeals = (props) => {
+  const OtherDeals = (props) => {
 
-  //   const [game, setGame] = useState(null);
+    const { game } = useSelector((state) => state.game);    
+    const { allStores } = useSelector((state) => state.stores);
 
-  //   useEffect(() => {
+    useEffect(() => {
+      dispatch(getGameAsync(props.gameId)).then(() => {
+      });
+    }, [props.gameId])
 
-  //     var getGame = {
-  //       method: 'get',
-  //       url: gameUrl + props.gameId,
-  //       headers: {}
-  //     };
+    if (!game[0]) return null;
+    if (!game[0].deals) return 'nodeals';
 
-  //     axios(getGame)
-  //       .then(function (response) {
-  //         console.log((response.data));
-  //         setGame(response.data)
-  //       })
-  //       .catch(function (error) {
-  //         console.log(error);
-  //       });
-  //   }, [props.gameId]);
+    const dealsWithSavings = game[0].deals.filter(deal => deal.savings > 0);
 
-  //   if (!game) return null;
+    const listDeals = dealsWithSavings.map((deal) =>    
+      <React.Fragment key={deal.dealID}>
+        <Row className='otherDealsDealContainer'>
+          <Col span={24}>
+            <Text className='otherDealsDealTitle'>
+              {allStores.find(x => x.storeID === deal.storeID).storeName}
+            </Text>
+          </Col>
+          <Row className='otherDealsDealDescription'>
+            <Col >
+              <Text>
+                <span className='otherDealsTextNormalPrice'>${deal.retailPrice}</span>
+                <span className='otherDealsTextSalePrice'>${deal.price}</span>
+              </Text>
 
-  //   const dealsWithSavings = game.deals.filter(deal => deal.savings > 0);
+            </Col>
+            <Col>
+              <Button className='otherDealsButton' onClick={() => { navigate('/deals/' + encodeURI(deal.dealID)) }}>View More</Button>
+            </Col>
+          </Row>
+        </Row>
+      </React.Fragment>
+    );
 
-  //   const listDeals = dealsWithSavings.map((deal) =>
-  //     <React.Fragment key={deal.dealID}>
-  //       <Row className='otherDealsDealContainer'>
-  //         <Col span={24}>
-  //           <Text className='otherDealsDealTitle'>
-  //             {storeCache.find(x => x.storeID === deal.storeID).storeName}
-
-  //           </Text>
-  //         </Col>
-  //         <Row className='otherDealsDealDescription'>
-  //           <Col >
-  //             <Text>
-  //               <span className='otherDealsTextNormalPrice'>${deal.retailPrice}</span>
-  //               <span className='otherDealsTextSalePrice'>${deal.price}</span>
-  //             </Text>
-
-  //           </Col>
-  //           <Col>
-  //             <Button className='otherDealsButton' onClick={() => { navigate('/deals/' + deal.dealID) }}>View More</Button>
-  //           </Col>
-  //         </Row>
-  //       </Row>
-  //     </React.Fragment>
-  //   );
-
-  //   return (
-  //     <>
-  //       <Row className='otherDealsTitleContainer'>
-  //         <Col span={24} className='otherDealsTitleTextContainer' >
-  //           <Text className='otherDealsTitleText' >Other deals for this game</Text>
-  //         </Col>
-  //       </Row>
-  //       {listDeals}
-  //     </>
-  //   )
-  // }
+    return (
+      <>
+        <Row className='otherDealsTitleContainer'>
+          <Col span={24} className='otherDealsTitleTextContainer' >
+            <Text className='otherDealsTitleText' >Other deals for this game</Text>
+          </Col>
+        </Row>
+        {listDeals}
+      </>
+    )
+  }
 
   const GameImage = (props) => {
+    if(!props.thumb) return null;
     return (
       <Row>
         <Col span={24}>
@@ -171,7 +159,7 @@ function DealDetail() {
           {dealImage ? <GameImage thumb={dealImage} /> : ''}
         </Col>
         <Col span={8}>
-          {/* {gameId ? <OtherDeals gameId={gameId} /> : ''} */}
+          {gameId ? <OtherDeals gameId={gameId} /> : ''}
         </Col>
       </Row>
     </>

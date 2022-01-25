@@ -1,11 +1,13 @@
 // store.js
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import { storesReducer } from './features';
+import { storesReducer, dealsReducer, gameReducer } from './features';
 
 const store = configureStore({
     reducer: {
-        stores: storesReducer
+        stores: storesReducer,
+        deals: dealsReducer,
+        game: gameReducer,
     },
 });
 
