@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from "react-router-dom"; 
+import { useParams, useNavigate } from "react-router-dom";
 import { Row, Col, Button, Image, Typography } from 'antd';
+
+import { useDispatch, useSelector } from "react-redux";
+import { getStoreName } from '../features/stores';
+
 import '../styles/Deals.css';
 import '../styles/DealDetail.css';
 
@@ -8,7 +12,6 @@ const { Text } = Typography;
 
 const dealUrl = "https://www.cheapshark.com/api/1.0/deals?id=";
 const gameUrl = "https://www.cheapshark.com/api/1.0/games?id=";
-const storeUrl = "https://www.cheapshark.com/api/1.0/stores?id=";
 
 var axios = require('axios');
 
@@ -20,6 +23,7 @@ function DealDetail() {
   const [storeId, setStoreId] = useState(null);
   const [dealImage, setDealImage] = useState(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   const Deal = (props) => {
 
@@ -38,7 +42,7 @@ function DealDetail() {
           console.log((response.data));
           setDeal(response.data)
           setGameId(response.data.gameInfo.gameID)
-          setStoreId(response.data.gameInfo.storeID)
+          setStoreId(response.data.gameInfo.storeID)          
           setDealImage(response.data.gameInfo.thumb)
         })
         .catch(function (error) {
@@ -70,30 +74,9 @@ function DealDetail() {
   }
 
   const Store = (props) => {
-    const [store, setStore] = useState(null);
-
-    useEffect(() => {
-
-      var getStore = {
-        method: 'get',
-        url: storeUrl,
-        headers: {}
-      };
-
-      axios(getStore)
-        .then(function (response) {
-          console.log((response.data));
-          setStore(response.data);
-          storeCache = response.data;
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }, []);
-
-    if (!store) return null;
-
-    const storeName = store.find(x => x.storeID === props.storeId).storeName;
+      
+    const storeName = useSelector((state) => state.stores.value);
+    dispatch(getStoreName(props.storeId));
 
     return (
       <>
@@ -106,68 +89,68 @@ function DealDetail() {
     )
   }
 
-  const OtherDeals = (props) => {
+  // const OtherDeals = (props) => {
 
-    const [game, setGame] = useState(null);
+  //   const [game, setGame] = useState(null);
 
-    useEffect(() => {
+  //   useEffect(() => {
 
-      var getGame = {
-        method: 'get',
-        url: gameUrl + props.gameId,
-        headers: {}
-      };
+  //     var getGame = {
+  //       method: 'get',
+  //       url: gameUrl + props.gameId,
+  //       headers: {}
+  //     };
 
-      axios(getGame)
-        .then(function (response) {
-          console.log((response.data));
-          setGame(response.data)
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }, [props.gameId]);
+  //     axios(getGame)
+  //       .then(function (response) {
+  //         console.log((response.data));
+  //         setGame(response.data)
+  //       })
+  //       .catch(function (error) {
+  //         console.log(error);
+  //       });
+  //   }, [props.gameId]);
 
-    if (!game) return null;
+  //   if (!game) return null;
 
-    const dealsWithSavings = game.deals.filter(deal => deal.savings > 0);
+  //   const dealsWithSavings = game.deals.filter(deal => deal.savings > 0);
 
-    const listDeals = dealsWithSavings.map((deal) =>
-      <>
-        <Row className='otherDealsDealContainer'>
-          <Col span={24}>
-            <Text className='otherDealsDealTitle'>
-              {storeCache.find(x => x.storeID === deal.storeID).storeName}
-            </Text>
-          </Col>
-          <Row className='otherDealsDealDescription'>
-            <Col >
-              <Text>
-                <span className='otherDealsTextNormalPrice'>${deal.retailPrice}</span>
-                <span className='otherDealsTextSalePrice'>${deal.price}</span>
-              </Text>
+  //   const listDeals = dealsWithSavings.map((deal) =>
+  //     <React.Fragment key={deal.dealID}>
+  //       <Row className='otherDealsDealContainer'>
+  //         <Col span={24}>
+  //           <Text className='otherDealsDealTitle'>
+  //             {storeCache.find(x => x.storeID === deal.storeID).storeName}
 
-            </Col>
-            <Col>
-              <Button className='otherDealsButton' onClick={()=>{navigate('/deals/'+deal.dealID)}}>View More</Button>
-            </Col>
-          </Row>
+  //           </Text>
+  //         </Col>
+  //         <Row className='otherDealsDealDescription'>
+  //           <Col >
+  //             <Text>
+  //               <span className='otherDealsTextNormalPrice'>${deal.retailPrice}</span>
+  //               <span className='otherDealsTextSalePrice'>${deal.price}</span>
+  //             </Text>
 
-        </Row>
-      </>
-    );
+  //           </Col>
+  //           <Col>
+  //             <Button className='otherDealsButton' onClick={() => { navigate('/deals/' + deal.dealID) }}>View More</Button>
+  //           </Col>
+  //         </Row>
+  //       </Row>
+  //     </React.Fragment>
+  //   );
 
-    return (
-      <>
-        <Row className='otherDealsTitleContainer'>
-          <Col span={24} className='otherDealsTitleTextContainer' >
-            <Text className='otherDealsTitleText' >Other deals for this game</Text>
-          </Col>
-        </Row>
-        {listDeals}
-      </>
-    )
-  }
+  //   return (
+  //     <>
+  //       <Row className='otherDealsTitleContainer'>
+  //         <Col span={24} className='otherDealsTitleTextContainer' >
+  //           <Text className='otherDealsTitleText' >Other deals for this game</Text>
+  //         </Col>
+  //       </Row>
+  //       {listDeals}
+  //     </>
+  //   )
+  // }
 
   const GameImage = (props) => {
     return (
@@ -183,12 +166,12 @@ function DealDetail() {
     <>
       <Row style={{ columnGap: '96px' }}>
         <Col span={14} >
-          { id ? <Deal dealId={id} /> : '' }
-          { storeId ? <Store storeId={storeId} /> : '' }
-          { dealImage ?  <GameImage thumb={dealImage} /> : '' }                   
+          {id ? <Deal dealId={id} /> : ''}
+          {storeId ? <Store storeId={storeId} /> : ''}
+          {dealImage ? <GameImage thumb={dealImage} /> : ''}
         </Col>
-        <Col span={8}>          
-          { gameId ? <OtherDeals gameId={gameId} /> : '' }
+        <Col span={8}>
+          {/* {gameId ? <OtherDeals gameId={gameId} /> : ''} */}
         </Col>
       </Row>
     </>
