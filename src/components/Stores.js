@@ -60,7 +60,7 @@ function Stores() {
             <Text className='storeTextTitle'>{store.storeName}</Text>
           </Col>
           <Col span={24} className='storeContainerDescription'>
-            <Text className='storeDescriptionDeals'>{125} deals</Text>            
+            <Text className='storeDescriptionDeals'>{'total deals unavailable'}</Text>            
           </Col>
           <Col span={24} className='storeContainerButton'>
             <Button className='storeButton' onClick={() => { navigate('/deals/' + encodeURI()) }}>View More</Button>
