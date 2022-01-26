@@ -31,10 +31,6 @@ function DealDetail() {
       });
     }, [props.dealId])
 
-    console.log(props.dealId);
-
-    console.log(deal.length);
-
     if (deal.length === 0) return null;
 
     setGameId(deal[0].gameInfo.gameID)
@@ -96,9 +92,23 @@ function DealDetail() {
     if (!game[0]) return null;
     if (!game[0].deals) return 'nodeals';
 
+    // only return deals with savings
     const dealsWithSavings = game[0].deals.filter(deal => deal.savings > 0);
 
-    const listDeals = dealsWithSavings.map((deal) =>
+    // remove current deal from list
+    const exlcCurrentDeal = removeCurrentDeal(props.dealId, dealsWithSavings);
+    
+    function removeCurrentDeal(nameKey, myArray) {
+      const newArray = []
+      for (var i = 0; i < myArray.length; i++) {        
+        if (myArray[i].dealID !== nameKey) {
+          newArray.push(myArray[i]);
+        }        
+      }
+      return newArray;
+    }
+
+    const listDeals = exlcCurrentDeal.map((deal) =>
       <React.Fragment key={deal.dealID}>
         <Row className='otherDealsDealContainer'>
           <Col span={24}>
@@ -154,7 +164,7 @@ function DealDetail() {
           {dealImage ? <GameImage thumb={dealImage} /> : ''}
         </Col>
         <Col span={8}>
-          {gameId ? <OtherDeals gameId={gameId} /> : ''}
+          {gameId ? <OtherDeals gameId={gameId} dealId={id} /> : ''}
         </Col>
       </Row>
     </>
