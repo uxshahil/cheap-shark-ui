@@ -15,7 +15,7 @@ function Deals() {
 
   const [filterTog, setFilterTog] = useState(true);
   const [dealsTog, setDealsTog] = useState(true);
-  const [q, setQ] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const navigate = useNavigate();
   const dispatch = useDispatch()
@@ -25,7 +25,7 @@ function Deals() {
   const PageHeader = () => {
 
     const handleSearch = value => {
-      setQ(value);
+      setSearchTerm(value);
       dispatch(filterDeals(value));
     }
 
@@ -71,36 +71,36 @@ function Deals() {
     )
   }
 
-  const DealsList = () => {
+  const DealsList = (props) => {    
     const allDeals = useSelector((state) => state.deals.allDeals[0]);
     const noDeals = useSelector((state) => state.deals.noDeals[0]);
     const filteredDeals = useSelector((state) => state.deals.filtered)
 
-    const [deals, setDeals] = useState(dealsTog ? allDeals : noDeals);
+    const [deals, setDeals] = useState();
 
     useEffect(() => {
-
-      if (!filteredDeals[0] && !q) {
+      if (!searchTerm) {
         setDeals(dealsTog ? allDeals : noDeals)
       }
-      else if (!filteredDeals[0] && q) {
-        setDeals('');
-        console.log(q);
+      else if (!filteredDeals[0] && searchTerm) {
+        setDeals();        
       }
-      else {
-        setDeals(filteredDeals);
-      }
-
-      console.log(filteredDeals)
-    }, [allDeals, noDeals, filteredDeals, q]);
+      else if (filteredDeals[0] && searchTerm) {
+        setDeals(dealsTog ? filteredDeals : noDeals);
+      }   
+    }, [allDeals, noDeals, filteredDeals]);
 
     const NoResults = () => {
       return (
-        <Col style={{ marginTop: '80px' }}>
-          <Text>Sorry, no deals available for search term: "<strong>{q}</strong>"</Text>
-          <Button style={{ marginLeft: '16px'}} onClick={() => { setQ('') }}>Reset Search</Button>
+        <Col className='noResultContainer'>
+          {!searchTerm
+            ? <Text>Sorry, no deals available</Text>
+            : <>
+              <Text>Sorry, no deals available for search term: <strong>{searchTerm}</strong></Text>
+              <Button className='noResultButton' onClick={() => { setSearchTerm('') }}>Reset Search</Button>
+            </>}
         </Col>)
-    }
+    }    
 
     if (!deals) return <NoResults />
 
