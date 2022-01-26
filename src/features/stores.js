@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-var axios = require('axios');
+// var axios = require('axios');
 
 let storesObject = [
     {

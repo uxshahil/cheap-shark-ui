@@ -4,11 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import PageHeader from "./PageHeader";
 import { getAllStores, filterStores } from '../features/stores';
 
-import { Row, Col, Typography, Input, Button, Image } from 'antd';
+import { Row, Col, Typography, Button, Image } from 'antd';
 import '../styles/Stores.css';
 
 const { Text, Title } = Typography
-const { Search } = Input;
 
 function Stores() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -47,9 +46,7 @@ function Stores() {
               <Button className='noResultButton' onClick={() => { setSearchTerm('') }}>Reset Search</Button>
             </>}
         </Col>)
-    }
-
-    console.log(stores);
+    }    
     
     if (!stores) return <NoResults />
 

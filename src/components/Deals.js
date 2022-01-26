@@ -3,13 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllDealsAsync, filterDeals } from '../features/deals';
 import PageHeader from "./PageHeader";
-import { Row, Col, Typography, Input, Checkbox, Button } from 'antd';
+import { Row, Col, Typography, Checkbox, Button } from 'antd';
 import '../styles/Deals.css';
 
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 
 const { Text, Title } = Typography
-const { Search } = Input;
 
 function Deals() {
 
