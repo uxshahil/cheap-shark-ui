@@ -15,27 +15,23 @@ export const dealsSlice = createSlice({
                     noDeals.push(deal)
                 }
             }
-            state.noDeals = noDeals;
-            console.log(state.allDeals[0]);
+            state.noDeals = noDeals;            
         },
         getDeal: (state, action) => {
             state.deal = [action.payload];
         },
-        filterDeals: (state, action) => {    
-            // console.log(action.payload);
+        filterDeals: (state, action) => {                
             if (state.allDeals[0]){
                 let filtered = [];
                 state.allDeals[0].forEach(filterDeals);
                 function filterDeals(deal) {
-                    let title = deal.title.toLowerCase();
-                    // console.log(deal);
+                    let title = deal.title.toLowerCase();                    
                     if (title.includes(action.payload.toLowerCase())) {
                         filtered.push(deal)
                     }
                 }
                 state.filtered = filtered;
-            }    
-            console.log(state.filtered)
+            }                
         }
     }
 })
@@ -53,9 +49,6 @@ export const getDealAsync = (dealID) => async (dispatch) => {
         await axios(getDealRequest)
             .then(function (response) {
                 dispatch(getDeal(response.data));
-                console.log(dealID);
-                console.log(dealUrl);
-                console.log(response.data);
             })
             .catch(function (error) {
                 console.log(error);

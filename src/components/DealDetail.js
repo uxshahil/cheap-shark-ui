@@ -90,25 +90,29 @@ function DealDetail() {
     }, [props.gameId])
 
     if (!game[0]) return null;
-    if (!game[0].deals) return 'nodeals';
+    if (!game[0].deals) return 'No Deals';
 
-    // only return deals with savings
-    const dealsWithSavings = game[0].deals.filter(deal => deal.savings > 0);
+    const filterDeals = (game) => {
+      // only return deals with savings
+      const dealsWithSavings = game[0].deals.filter(deal => deal.savings > 0);
 
-    // remove current deal from list
-    const exlcCurrentDeal = removeCurrentDeal(props.dealId, dealsWithSavings);
-    
-    function removeCurrentDeal(nameKey, myArray) {
-      const newArray = []
-      for (var i = 0; i < myArray.length; i++) {        
-        if (myArray[i].dealID !== nameKey) {
-          newArray.push(myArray[i]);
-        }        
+      // remove current deal from list
+      const exlcCurrentDeal = removeCurrentDeal(props.dealId, dealsWithSavings);
+
+      function removeCurrentDeal(dealID, dealArray) {
+        const filtered = []
+        for (var i = 0; i < dealArray.length; i++) {
+          if (dealArray[i].dealID !== dealID) {
+            filtered.push(dealArray[i]);
+          }
+        }
+        return filtered;
       }
-      return newArray;
+
+      return exlcCurrentDeal
     }
 
-    const listDeals = exlcCurrentDeal.map((deal) =>
+    const listDeals = filterDeals(game).map((deal) =>
       <React.Fragment key={deal.dealID}>
         <Row className='otherDealsDealContainer'>
           <Col span={24}>
@@ -122,7 +126,6 @@ function DealDetail() {
                 <span className='otherDealsTextNormalPrice'>${deal.retailPrice}</span>
                 <span className='otherDealsTextSalePrice'>${deal.price}</span>
               </Text>
-
             </Col>
             <Col>
               <Button className='otherDealsButton' onClick={() => { navigate('/deals/' + encodeURI(deal.dealID)) }}>View More</Button>

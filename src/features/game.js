@@ -24,8 +24,7 @@ export const getGameAsync = (gameID) => async (dispatch) => {
         };
         await axios(getGameRequest)
             .then(function (response) {                
-                dispatch(getGame(response.data));
-                console.log(response.data);
+                dispatch(getGame(response.data));                
             })
             .catch(function (error) {
                 console.log(error);

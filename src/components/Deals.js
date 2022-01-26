@@ -43,8 +43,7 @@ function Deals() {
 
   const Filters = (props) => {
 
-    function filterResults(e) {
-      console.log(`checked = ${e.target.checked}`);
+    function filterResults(e) {      
       setDealsTog(e.target.checked);
     };
 
