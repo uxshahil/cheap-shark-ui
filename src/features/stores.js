@@ -353,19 +353,35 @@ let storesObject = [
 
 export const storesSlice = createSlice({
     name: "stores",
-    initialState: { allStores: [], store: '' },
+    initialState: { allStores: [], store: '', filtered: [] },
     reducers: {
-        getAllStores: (state, action) => {
+        getAllStores: (state) => {
             state.allStores = storesObject;            
+            console.log(state.allStores);
         },
         getStoreName: (state, action) => {
             state.store = state.allStores.find(
                 x => x.storeID === action.payload
             ).storeName
         },
+        filterStores: (state, action) => {
+            if (state.allStores[0]){
+                let filtered = [];
+                state.allStores.forEach(filterStores);
+                function filterStores(store) {
+                    let title = store.storeName.toLowerCase();                    
+                    if (title.includes(action.payload.toLowerCase())) {
+                        filtered.push(store)
+                    }
+                }
+                state.filtered = filtered;
+                console.log(action.payload);
+                console.log(state.filtered);
+            }   
+        }
     },
 })
 
-export const { getAllStores, getStoreName } = storesSlice.actions;
+export const { getAllStores, getStoreName, filterStores } = storesSlice.actions;
 
 export default storesSlice.reducer;

@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllDealsAsync, filterDeals } from '../features/deals';
-
+import PageHeader from "./PageHeader";
 import { Row, Col, Typography, Input, Checkbox, Button } from 'antd';
 import '../styles/Deals.css';
 
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 
-const { Text } = Typography
+const { Text, Title } = Typography
 const { Search } = Input;
 
 function Deals() {
@@ -22,28 +22,14 @@ function Deals() {
 
   dispatch(getAllDealsAsync());
 
-  const PageHeader = () => {
-
-    const handleSearch = value => {
-      setSearchTerm(value);
-      dispatch(filterDeals(value));
-    }
-
-    return (
-      <Row className='pageHeader'>
-        <Col span={18} >
-          <Text className='dealsHeaderText'>Deals</Text>
-        </Col>
-        <Col span={6}>
-          <Search placeholder="Search deals by name" onSearch={handleSearch} />
-        </Col>
-      </Row>
-    )
+  const handleSearch = value => {
+    setSearchTerm(value);
+    dispatch(filterDeals(value));
   }
 
   const Filters = (props) => {
 
-    function filterResults(e) {      
+    function filterResults(e) {
       setDealsTog(e.target.checked);
     };
 
@@ -70,7 +56,7 @@ function Deals() {
     )
   }
 
-  const DealsList = (props) => {    
+  const DealsList = (props) => {
     const allDeals = useSelector((state) => state.deals.allDeals[0]);
     const noDeals = useSelector((state) => state.deals.noDeals[0]);
     const filteredDeals = useSelector((state) => state.deals.filtered)
@@ -82,25 +68,25 @@ function Deals() {
         setDeals(dealsTog ? allDeals : noDeals)
       }
       else if (!filteredDeals[0] && searchTerm) {
-        setDeals();        
+        setDeals();
       }
       else if (filteredDeals[0] && searchTerm) {
         setDeals(dealsTog ? filteredDeals : noDeals);
-      }   
+      }
     }, [allDeals, noDeals, filteredDeals]);
 
     const NoResults = () => {
       return (
         <Col className='noResultContainer'>
           {!searchTerm
-            ? <Text>Sorry, no deals available</Text>
+            ? (!allDeals ? <Title>Loading...</Title> : <Title>Sorry, no deals available</Title>)
             : <>
-              <Text>Sorry, no deals available for search term: <strong>{searchTerm}</strong></Text>
+              <Title>Sorry, no deals available for search term: <strong>{searchTerm}</strong></Title>
               <Button className='noResultButton' onClick={() => { setSearchTerm('') }}>Reset Search</Button>
             </>}
         </Col>)
-    }    
-
+    }
+    
     if (!deals) return <NoResults />
 
     const listDeals = deals.map((deal) =>
@@ -130,7 +116,11 @@ function Deals() {
 
   return (
     <>
-      <PageHeader />
+      <PageHeader
+        onSearch={handleSearch}
+        placeholder={'Search deals by name'}
+        headerText={'Deals'}
+      />
       <Filters dropdown={filterTog} />
       <DealsList />
     </>

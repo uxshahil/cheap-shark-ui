@@ -1,0 +1,24 @@
+/* PageHeader */
+.pageHeader {
+	height: 108px;
+	display: flex;
+	align-items: center;
+	margin-bottom: 48px;
+}
+
+.headerText {
+	font-weight: 500;
+	font-size: 48px;
+	line-height: 62px;
+	letter-spacing: 1.5px;
+}
+
+.ant-input-group .ant-input,
+.ant-btn {
+	height: 52px !important;    
+    background: none !important;
+}
+
+.ant-input-group-addon .ant-btn {
+	border-left: none !important;
+}
