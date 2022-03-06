@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import PageHeader from "./PageHeader";
-import { getAllStores, filterStores } from '../features/stores';
+import { getAllStoresAsync, filterStoresAsync } from '../features/stores';
 
 import { Row, Col, Typography, Button, Image } from 'antd';
 import '../styles/Stores.css';
@@ -10,47 +9,56 @@ import '../styles/Stores.css';
 const { Text, Title } = Typography
 
 function Stores() {
-  const [searchTerm, setSearchTerm] = useState('');
+  
+  const [state, setState] = useState({storesFilter: ''})    
 
-  const navigate = useNavigate();
   const dispatch = useDispatch()
-  dispatch(getAllStores());
 
-  const handleSearch = value => {
-    setSearchTerm(value);
-    dispatch(filterStores(value));
+  useEffect(() => {
+    dispatch(getAllStoresAsync());
+  }, [dispatch])
+
+  const handleSearch = value => {    
+    setState({storesFilter: value});     
   }
 
-  const StoresList = (props) => {
-    const allStores = useSelector((state) => state.stores.allStores);
-    const filteredStores = useSelector((state) => state.stores.filtered);
-    
-    const [ stores, setStores ] = useState();
+  const StoresList = () => {
+    let renderStores;
 
-    useEffect(()=>{
-      if (!searchTerm) {
-        setStores(allStores)
-      }else(
-        setStores(filteredStores)
-      )
-    },
-    [allStores, filteredStores]);
+    const storesFilter = state.storesFilter;  
 
-    const NoResults = () => {
+    const allStores = useSelector((state) => state.stores.data.allStores);
+    const filteredStores = useSelector((state) => state.stores.data.filteredStores);
+    const isLoading = useSelector((state) => state.stores.loading);            
+
+    useEffect(() => {
+      if (!isLoading) {
+        dispatch(filterStoresAsync(allStores, storesFilter))
+      }
+    }, [allStores, storesFilter, isLoading]);
+
+    const NoResults = ({ message, resetSearch }) => {
       return (
         <Col className='noResultContainer'>
-          {!searchTerm
-            ? (!allStores ? <Title>Loading...</Title> : <Title>Sorry, no stores available</Title>)
-            : <>
-              <Title>Sorry, no stores available for search term: <strong>{searchTerm}</strong></Title>
-              <Button className='noResultButton' onClick={() => { setSearchTerm('') }}>Reset Search</Button>
-            </>}
-        </Col>)
-    }    
+          <Title>{message}</Title>
+          {resetSearch ? <Button className='noResultButton' onClick={()=>{setState({storesFilter: ''})}}>Reset Search</Button> : ''}
+        </Col>
+      )
+    }
     
-    if (!stores) return <NoResults />
+    if (isLoading) return <NoResults message={'Loading...'} />    
 
-    const listStores = stores.map((store) =>
+    if (storesFilter === '') {
+      renderStores = allStores;
+    } else {
+      renderStores = filteredStores;
+    }
+
+    if (!renderStores.length && storesFilter !== '') return <NoResults message={`Sorry, no stores available for search term: ${storesFilter}`} resetSearch={true} />
+
+    if (!renderStores.length) return <NoResults message={'Sorry, no stores available'} />
+
+    const listStores = renderStores.map((store) =>
       <Col className='storeContainer' key={store.storeID}>
         <Row className='storeImageContainer'>
           <Image width='100%' src={'https://www.cheapshark.com/'+store.images.logo}></Image>

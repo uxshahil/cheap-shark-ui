@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Row, Col, Button, Image, Typography } from 'antd';
 
 import { useDispatch, useSelector } from "react-redux";
-import { getAllStores, getStoreName } from '../features/stores';
+import { getAllStoresAsync, getStoreName } from '../features/stores';
 import { getDealAsync } from '../features/deals';
 import { getGameAsync } from '../features/game';
 
@@ -19,36 +19,40 @@ function DealDetail() {
   const [storeId, setStoreId] = useState(null);
   const [dealImage, setDealImage] = useState(null);
   const navigate = useNavigate();
-  const dispatch = useDispatch()
-  dispatch(getAllStores());
+  const dispatch = useDispatch() 
 
   const Deal = (props) => {
 
-    const deal = useSelector((state) => state.deals.deal);
+    const deal = useSelector((state) => state.deals.data.deal);
+    const isLoading = useSelector((state) => state.deals.loading);
 
     useEffect(() => {
       dispatch(getDealAsync(props.dealId)).then(() => {
       });
-    }, [props.dealId])
+    }, [props.dealId])  
 
-    if (deal.length === 0) return null;
+    useEffect(()=>{
+      if(!isLoading){
+        setGameId(deal.gameInfo.gameID)
+        setStoreId(deal.gameInfo.storeID)
+        setDealImage(deal.gameInfo.thumb)
+      }      
+    }, [deal, isLoading])  
 
-    setGameId(deal[0].gameInfo.gameID)
-    setStoreId(deal[0].gameInfo.storeID)
-    setDealImage(deal[0].gameInfo.thumb)
+    if (isLoading) return 'loading...';
 
     return (
       <>
         <Row className='dealDetailContainer'>
           <Col span={24} className='dealDetailContainerTitle'>
-            <Text className='dealDetailTextTitle'>{deal[0].gameInfo.name}</Text>
+            <Text className='dealDetailTextTitle'>{deal.gameInfo.name}</Text>
           </Col>
           <Col span={24} className='dealDetailContainerDescription'>
             <Text>
-              <span className='dealDetailTextNormalPrice'>${deal[0].gameInfo.retailPrice}</span>
-              <span className='dealDetailTextSalePrice'>${deal[0].gameInfo.salePrice}</span>
+              <span className='dealDetailTextNormalPrice'>${deal.gameInfo.retailPrice}</span>
+              <span className='dealDetailTextSalePrice'>${deal.gameInfo.salePrice}</span>
             </Text>
-            <Text className='dealDetailTextYouSave'>You save ${(deal[0].gameInfo.retailPrice - deal[0].gameInfo.salePrice).toFixed(2)}</Text>
+            <Text className='dealDetailTextYouSave'>You save ${(deal.gameInfo.retailPrice - deal.gameInfo.salePrice).toFixed(2)}</Text>
           </Col>
         </Row>
       </>
@@ -56,23 +60,24 @@ function DealDetail() {
 
   }
 
-  const Store = (props) => {
+  const Store = (props) => {    
 
-    const { allStores, store } = useSelector((state) => state.stores);
+    const storeName = useSelector((state) => state.stores.data.storeName);
+    const storesIsLoading = useSelector((state)=> state.stores.loading);
 
     useEffect(() => {
-      if (allStores.length > 1) {
-        dispatch(getStoreName(props.storeId));
+      if (!storesIsLoading) {
+        dispatch(getStoreName(props.storeId));    
       }
-    }, [props.storeId, allStores.length])
+    }, [props.storeId, storesIsLoading])
 
-    if (!store) return 'null';
+    if (storesIsLoading || storeName === '') return 'loading...';    
 
     return (
       <>
         <Row className='storeTitleContainer'>
           <Col span={24} className='storeTitleTextContainer'>
-            <Text className='storeTitleText'>{store}</Text>
+            <Text className='storeTitleText'>{storeName}</Text>
           </Col>
         </Row>
       </>
@@ -81,23 +86,26 @@ function DealDetail() {
 
   const OtherDeals = (props) => {
 
-    const { game } = useSelector((state) => state.game);
-    const { allStores } = useSelector((state) => state.stores);
+    const game = useSelector((state) => state.game.data);
+    const gameIsLoading = useSelector((state)=> state.game.loading)    
+    const allStores = useSelector((state) => state.stores.data.allStores);
+    const storesIsLoading = useSelector((state)=> state.stores.loading)
 
     useEffect(() => {
+      dispatch(getAllStoresAsync());
       dispatch(getGameAsync(props.gameId)).then(() => {
       });
     }, [props.gameId])
 
-    if (!game[0]) return null;
-    if (!game[0].deals) return 'No Deals';
+    if (gameIsLoading || storesIsLoading) return 'loading...'
+    if (game.deals.length === '0') return 'No Deals';      
 
     const filterDeals = (game) => {
       // only return deals with savings
-      const dealsWithSavings = game[0].deals.filter(deal => deal.savings > 0);
+      const dealsWithSavings = game.deals.filter(deal => deal.savings > 0);
 
       // remove current deal from list
-      const exlcCurrentDeal = removeCurrentDeal(props.dealId, dealsWithSavings);
+      const exclCurrentDeal = removeCurrentDeal(props.dealId, dealsWithSavings);
 
       function removeCurrentDeal(dealID, dealArray) {
         const filtered = []
@@ -107,9 +115,9 @@ function DealDetail() {
           }
         }
         return filtered;
-      }
+      }    
 
-      return exlcCurrentDeal
+      return exclCurrentDeal
     }
 
     const listDeals = filterDeals(game).map((deal) =>
@@ -133,7 +141,7 @@ function DealDetail() {
           </Row>
         </Row>
       </React.Fragment>
-    );
+    );    
 
     return (
       <>
@@ -148,7 +156,7 @@ function DealDetail() {
   }
 
   const GameImage = (props) => {
-    if (!props.thumb) return null;
+    if (!props.thumb) return '';
     return (
       <Row>
         <Col span={24}>
