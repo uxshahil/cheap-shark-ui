@@ -19,7 +19,7 @@ function DealDetail() {
   const [storeId, setStoreId] = useState(null);
   const [dealImage, setDealImage] = useState(null);
   const navigate = useNavigate();
-  const dispatch = useDispatch() 
+  const dispatch = useDispatch()
 
   const Deal = (props) => {
 
@@ -29,15 +29,15 @@ function DealDetail() {
     useEffect(() => {
       dispatch(getDealAsync(props.dealId)).then(() => {
       });
-    }, [props.dealId])  
+    }, [props.dealId])    
 
-    useEffect(()=>{
-      if(!isLoading){
+    useEffect(() => {
+      if (!isLoading) {
         setGameId(deal.gameInfo.gameID)
         setStoreId(deal.gameInfo.storeID)
         setDealImage(deal.gameInfo.thumb)
-      }      
-    }, [deal, isLoading])  
+      }
+    }, [deal, isLoading])
 
     if (isLoading) return 'loading...';
 
@@ -60,18 +60,18 @@ function DealDetail() {
 
   }
 
-  const Store = (props) => {    
+  const Store = (props) => {
 
     const storeName = useSelector((state) => state.stores.data.storeName);
-    const storesIsLoading = useSelector((state)=> state.stores.loading);
+    const storesIsLoading = useSelector((state) => state.stores.loading);
 
     useEffect(() => {
       if (!storesIsLoading) {
-        dispatch(getStoreName(props.storeId));    
+        dispatch(getStoreName(props.storeId));
       }
     }, [props.storeId, storesIsLoading])
 
-    if (storesIsLoading || storeName === '') return 'loading...';    
+    if (storesIsLoading || storeName === '') return 'loading...';
 
     return (
       <>
@@ -87,9 +87,9 @@ function DealDetail() {
   const OtherDeals = (props) => {
 
     const game = useSelector((state) => state.game.data);
-    const gameIsLoading = useSelector((state)=> state.game.loading)    
+    const gameIsLoading = useSelector((state) => state.game.loading)
     const allStores = useSelector((state) => state.stores.data.allStores);
-    const storesIsLoading = useSelector((state)=> state.stores.loading)
+    const storesIsLoading = useSelector((state) => state.stores.loading)
 
     useEffect(() => {
       dispatch(getAllStoresAsync());
@@ -98,7 +98,7 @@ function DealDetail() {
     }, [props.gameId])
 
     if (gameIsLoading || storesIsLoading) return 'loading...'
-    if (game.deals.length === '0') return 'No Deals';      
+    if (game.deals.length === '0') return 'No Deals';
 
     const filterDeals = (game) => {
       // only return deals with savings
@@ -115,7 +115,7 @@ function DealDetail() {
           }
         }
         return filtered;
-      }    
+      }
 
       return exclCurrentDeal
     }
@@ -141,7 +141,7 @@ function DealDetail() {
           </Row>
         </Row>
       </React.Fragment>
-    );    
+    );
 
     return (
       <>
