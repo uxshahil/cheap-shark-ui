@@ -21,52 +21,52 @@ export const dealsSlice = createSlice({
         getAllDealsLoading: (state) => {
             state.loading = true;
             state.error = false;
-            console.log('getAllDealsLoading')
+            // console.log('getAllDealsLoading')
         },
         getAllDealsSuccess: (state, action) => {
             state.data.allDeals = action.payload;
             state.loading = false;
             state.error = false;
-            console.log('getAllDealsSuccess')
+            // console.log('getAllDealsSuccess')
         },
         getAllDealsFailure: (state, action) => {
             state.loading = false;
             state.error = action.payload;
-            console.log('getAllDealsFailure')
+            // console.log('getAllDealsFailure')
         },
         filterDealsLoading: (state) => {
             state.filtering = true;
             state.error = false;
-            console.log('filterDealsLoading')
+            // console.log('filterDealsLoading')
         },
         filterDealsSuccess: (state, action) => {
             state.data.filteredDeals = action.payload;
             state.filtering = false;
             state.error = false;
-            console.log('filterDealsSuccess')
-            console.log(current(state.data));
+            // console.log('filterDealsSuccess')
+            // console.log(current(state.data));
         },
         filterDealsFailure: (state, action) => {
             state.filtering = false;
             state.error = action.payload;
-            console.log('filterDealsFailure')
+            // console.log('filterDealsFailure')
         },
         getDealLoading: (state, action) => {
             state.inputData = action.payload;
             state.loading = true;
             state.error = false;
-            console.log('getDealLoading')
+            // console.log('getDealLoading')
         },
         getDealSuccess: (state, action) => {
             state.data.deal = action.payload;
             state.loading = false;
             state.error = false;
-            console.log('getDealSuccess')
+            // console.log('getDealSuccess')
         },
         getDealFailure: (state, action) => {
             state.loading = false;
             state.error = action.payload;
-            console.log('getDealFailure')
+            // console.log('getDealFailure')
         },
     }
 })
