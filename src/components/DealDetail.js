@@ -24,7 +24,8 @@ function DealDetail() {
   const Deal = (props) => {
 
     const deal = useSelector((state) => state.deals.data.deal);
-    const isLoading = useSelector((state) => state.deals.loading);
+    const dealsIsLoading = useSelector((state) => state.deals.loading.allDeals);
+    const dealIsLoading = useSelector((state) => state.deals.loading.deal);
 
     useEffect(() => {
       dispatch(getDealAsync(props.dealId)).then(() => {
@@ -32,14 +33,16 @@ function DealDetail() {
     }, [props.dealId])    
 
     useEffect(() => {
-      if (!isLoading) {
+      if (!dealIsLoading) {
         setGameId(deal.gameInfo.gameID)
         setStoreId(deal.gameInfo.storeID)
         setDealImage(deal.gameInfo.thumb)
       }
-    }, [deal, isLoading])
+    }, [dealIsLoading, deal])
 
-    if (isLoading) return 'loading...';
+    if (dealIsLoading) return 'loading...';
+
+    console.log(deal);
 
     return (
       <>
@@ -97,8 +100,7 @@ function DealDetail() {
       });
     }, [props.gameId])
 
-    if (gameIsLoading || storesIsLoading) return 'loading...'
-    if (game.deals.length === '0') return 'No Deals';
+    if (gameIsLoading || storesIsLoading) return 'loading...'        
 
     const filterDeals = (game) => {
       // only return deals with savings
@@ -147,10 +149,10 @@ function DealDetail() {
       <>
         <Row className='otherDealsTitleContainer'>
           <Col span={24} className='otherDealsTitleTextContainer' >
-            <Text className='otherDealsTitleText' >Other deals for this game</Text>
+            <Text className='otherDealsTitleText' > {game.deals.length <= '1' ? 'No other deals' : 'Other deals for this game'} </Text>
           </Col>
         </Row>
-        {listDeals}
+        { listDeals }
       </>
     )
   }

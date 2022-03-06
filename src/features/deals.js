@@ -8,7 +8,10 @@ const initialState = {
         deal: {},
         filteredDeals: {},
     },
-    loading: true,
+    loading: {
+        allDeals: true,
+        deal: true,
+    },    
     filtering: false,
     error: false,
     inputData: {}
@@ -19,18 +22,18 @@ export const dealsSlice = createSlice({
     initialState: initialState,
     reducers: {
         getAllDealsLoading: (state) => {
-            state.loading = true;
+            state.loading.allDeals = true;
             state.error = false;
             // console.log('getAllDealsLoading')
         },
         getAllDealsSuccess: (state, action) => {
             state.data.allDeals = action.payload;
-            state.loading = false;
+            state.loading.allDeals = false;
             state.error = false;
             // console.log('getAllDealsSuccess')
         },
         getAllDealsFailure: (state, action) => {
-            state.loading = false;
+            state.loading.allDeals = false;
             state.error = action.payload;
             // console.log('getAllDealsFailure')
         },
@@ -53,18 +56,18 @@ export const dealsSlice = createSlice({
         },
         getDealLoading: (state, action) => {
             state.inputData = action.payload;
-            state.loading = true;
+            state.loading.deal = true;
             state.error = false;
             // console.log('getDealLoading')
         },
         getDealSuccess: (state, action) => {
             state.data.deal = action.payload;
-            state.loading = false;
+            state.loading.deal = false;
             state.error = false;
             // console.log('getDealSuccess')
         },
         getDealFailure: (state, action) => {
-            state.loading = false;
+            state.loading.deal = false;
             state.error = action.payload;
             // console.log('getDealFailure')
         },
@@ -113,8 +116,6 @@ export const getAllDealsAsync = () => dispatch => {
                 dispatch(getAllDealsSuccess(response.data));
             })
         
-            
-
     } catch (err) {
         dispatch(getAllDealsFailure(err));
         throw new Error(err);

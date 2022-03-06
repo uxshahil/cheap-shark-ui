@@ -61,7 +61,7 @@ function Deals() {
 
     const filteredDeals = useSelector((state) => state.deals.data.filteredDeals)
     const allDeals = useSelector((state) => state.deals.data.allDeals);
-    const isLoading = useSelector((state) => state.deals.loading);        
+    const isLoading = useSelector((state) => state.deals.loading.allDeals);        
 
     useEffect(() => {
       if (!isLoading) {
